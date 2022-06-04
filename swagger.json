@@ -1,0 +1,259 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.6",
+        "title": "On Time Delivery Project",
+        "description": "My User Project CRUD RESTful API",
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        }
+    },
+    "host": "localhost:8001",
+    "basePath": "/users",
+    "tags": [{
+        "name": "User Parcel Delivery",
+        "description": "API for users in the system"
+    }],
+    "schemes": ["http"],
+    "consumes": ["application/json"],
+    "produces": ["application/json"],
+    "paths": {
+        "/signup": {
+            "post": {
+                "tags": ["Users"],
+                "description": "Create new user in system",
+                "parameters": [{
+                    "name": "user",
+                    "in": "body",
+                    "description": "User Registration",
+                    "schema": {
+                        "$ref": "#/definitions/User"
+                    }
+                }],
+                "produces": ["application/json"],
+                "responses": {
+                    "200": {
+                        "description": "New user is created",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "tags": ["Users"],
+                "description": "user login's into the system",
+                "parameters": [{
+                    "name": "user",
+                    "in": "body",
+                    "description": "User Login",
+                    "schema": {
+                        "$ref": "#/definitions/User"
+                    }
+                }],
+                "produces": ["application/json"],
+                "responses": {
+                    "200": {
+                        "description": "New user is created",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    }
+                },
+                "400": {
+                    "description": "user not found",
+                    "schema": {
+                        "$ref": "#/definitions/User"
+                    }
+                }
+            }
+        },
+        "/parcels": {
+            "post": {
+                "tags": ["Users"],
+                "description": "user post parcels in system",
+                "parameters": [{
+                    "name": "parcels",
+                    "in": "body",
+                    "amount": "integer",
+                    "parcelId": "integer",
+                    "description": "User places order for parcels",
+                    "schema": {
+                        "$ref": "#/definitions/User"
+                    }
+                }],
+                "produces": ["application/json"],
+                "responses": {
+                    "200": {
+                        "description": "parcels ordered",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    }
+                },
+                "400": {
+                    "description": "Parcel not found",
+                    "schema": {
+                        "$ref": "#/definitions/User/parcels"
+                    }
+                }
+            }
+        },
+        "/parcels/parcelId": {
+            "get": {
+                "tags": ["parcelIds"],
+                "description": "get all parcelIds in an array",
+                "parameters": [{
+                    "parcelId": "integer",
+                    "in": "body",
+                    "type": "integer",
+                    "description": "parcelIds",
+                    "schema": {
+                        "$ref": "#/definitions/User/parcels/parcelId"
+                    }
+                }],
+                "produces": ["application/json"],
+                "responses": {
+                    "200": {
+                        "description": "Parceld Available",
+                        "schema": {
+                            "$ref": "#/definitions/User/parcels"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/userId/parcels": {
+            "get": {
+                "tags": ["parcelIds"],
+                "description": "get all parcelIds in an array",
+                "parameters": [{
+                    "parcelId": "integer",
+                    "in": "body",
+                    "type": "integer",
+                    "description": "parcelIds",
+                    "schema": {
+                        "$ref": "#/definitions/User/parcels"
+                    }
+                }],
+                "produces": ["application/json"],
+                "responses": {
+                    "200": {
+                        "description": "Your parcels are intact",
+                        "schema": {
+                            "$ref": "#/definitions/User/parcels"
+                        }
+                    }
+                }
+            }
+        },
+        "/parcels/parcelId/edit": {
+            "put": {
+                "tags": ["parcelIds"],
+                "description": "get all parcelIds in an array",
+                "parameters": [{
+                    "parcelId": "integer",
+                    "in": "body",
+                    "type": "integer",
+                    "description": "parcelIds",
+                    "schema": {
+                        "$ref": "#/definitions/User/parcels/parcelId"
+                    }
+                }],
+                "produces": ["application/json"],
+                "responses": {
+                    "200": {
+                        "description": "Updated!!",
+                        "schema": {
+                            "$ref": "#/definitions/User/parcels"
+                        }
+                    }
+                }
+            }
+        },
+        "/parcels/parcelId/cancel": {
+            "delete": {
+                "tags": ["parcelIds"],
+                "description": "get all parcelIds in an array",
+                "parameters": [{
+                    "parcelId": "integer",
+                    "in": "body",
+                    "type": "integer",
+                    "description": "parcelIds",
+                    "schema": {
+                        "$ref": "#/definitions/User/parcels/parcelId"
+                    }
+                }],
+                "produces": ["application/json"],
+                "responses": {
+                    "200": {
+                        "description": "Deleted",
+                        "schema": {
+                            "$ref": "#/definitions/User/parcels"
+                        }
+                    }
+                }
+            }
+        }
+
+    },
+
+    "definitions": {
+        "User": {
+            "required": ["name", "_id", "email", "password"],
+            "properties": {
+                "_id": {
+                    "type": "integer",
+                    "uniqueItems": true
+                },
+                "isPublic": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "parcel": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "amount": {
+                                "type": "number"
+                            },
+                            "parcelId": {
+                                "type": "number"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "Parcels": {
+            "required": ["name", "parcelId", "amount"],
+            "properties": {
+                "publicDelivery": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "parcelId": {
+                    "type": "array"
+                },
+                "amount": {
+                    "type": "number"
+                }
+            }
+        }
+    },
+    "Users": {
+        "type": "array",
+        "$ref": "#/definitions/user"
+    }
+}

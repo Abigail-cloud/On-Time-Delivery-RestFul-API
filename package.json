@@ -1,0 +1,36 @@
+{
+    "name": "on-time-delivery-restful-api",
+    "version": "1.0.0",
+    "description": "You are expected to create a set of API endpoints already defined below and use data structures to store data in memory (don’t use a database).  Tools And Technologies  ● Server-Side: Nodejs And Expressjs",
+    "main": "server.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "nodemon server.js --exec babel-node --presets babel-preset-env",
+        "lint": "eslint src/js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Abigail-cloud/On-Time-Delivery-RestFul-API.git"
+    },
+    "keywords": [],
+    "author": "Abigail",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/Abigail-cloud/On-Time-Delivery-RestFul-API/issues"
+    },
+    "homepage": "https://github.com/Abigail-cloud/On-Time-Delivery-RestFul-API#readme",
+    "dependencies": {
+        "bcrypt": "^5.0.1",
+        "body-parser": "^1.20.0",
+        "express": "^4.18.1",
+        "jsonwebtoken": "^8.5.1",
+        "nodemon": "^2.0.16",
+        "swagger-ui-express": "^4.4.0"
+    },
+    "devDependencies": {
+        "babel-cli": "^6.26.0",
+        "babel-core": "^6.26.3",
+        "babel-loader": "^8.2.5",
+        "babel-preset-env": "^1.7.0"
+    }
+}
