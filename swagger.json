@@ -57,14 +57,14 @@
                 "produces": ["application/json"],
                 "responses": {
                     "200": {
-                        "description": "New user is created",
+                        "description": "User Logged In",
                         "schema": {
                             "$ref": "#/definitions/User"
                         }
                     }
                 },
                 "400": {
-                    "description": "user not found",
+                    "description": "User not found",
                     "schema": {
                         "$ref": "#/definitions/User"
                     }
@@ -73,7 +73,7 @@
         },
         "/parcels": {
             "post": {
-                "tags": ["Users"],
+                "tags": ["Parcels"],
                 "description": "user post parcels in system",
                 "parameters": [{
                     "name": "parcels",
@@ -82,7 +82,7 @@
                     "parcelId": "integer",
                     "description": "User places order for parcels",
                     "schema": {
-                        "$ref": "#/definitions/User"
+                        "$ref": "#/definitions/Parcels"
                     }
                 }],
                 "produces": ["application/json"],
@@ -90,37 +90,37 @@
                     "200": {
                         "description": "parcels ordered",
                         "schema": {
-                            "$ref": "#/definitions/User"
+                            "$ref": "#/definitions/Parcels"
                         }
                     }
                 },
                 "400": {
                     "description": "Parcel not found",
                     "schema": {
-                        "$ref": "#/definitions/User/parcels"
+                        "$ref": "#/definitions/Parcels"
                     }
                 }
             }
         },
         "/parcels/parcelId": {
             "get": {
-                "tags": ["parcelIds"],
-                "description": "get all parcelIds in an array",
+                "tags": ["Users Parcel Ids"],
+                "description": "Get all users parcelIds in an array",
                 "parameters": [{
                     "parcelId": "integer",
                     "in": "body",
                     "type": "integer",
-                    "description": "parcelIds",
+                    "description": "Parcel-Ids in an array",
                     "schema": {
-                        "$ref": "#/definitions/User/parcels/parcelId"
+                        "$ref": "#/definitions/Parcel-Id"
                     }
                 }],
                 "produces": ["application/json"],
                 "responses": {
                     "200": {
-                        "description": "Parceld Available",
+                        "description": "Parcel-Id Available",
                         "schema": {
-                            "$ref": "#/definitions/User/parcels"
+                            "$ref": "#/definitions/Parcel-Id"
                         }
                     }
                 }
@@ -128,15 +128,15 @@
         },
         "/users/userId/parcels": {
             "get": {
-                "tags": ["parcelIds"],
-                "description": "get all parcelIds in an array",
+                "tags": ["User ID Parcels"],
+                "description": "Get all parcelIds in an array",
                 "parameters": [{
                     "parcelId": "integer",
                     "in": "body",
                     "type": "integer",
-                    "description": "parcelIds",
+                    "description": "Get User parcels in an array Object",
                     "schema": {
-                        "$ref": "#/definitions/User/parcels"
+                        "$ref": "#/definitions/User"
                     }
                 }],
                 "produces": ["application/json"],
@@ -144,7 +144,7 @@
                     "200": {
                         "description": "Your parcels are intact",
                         "schema": {
-                            "$ref": "#/definitions/User/parcels"
+                            "$ref": "#/definitions/Parcels"
                         }
                     }
                 }
@@ -152,15 +152,15 @@
         },
         "/parcels/parcelId/edit": {
             "put": {
-                "tags": ["parcelIds"],
+                "tags": ["Users Parcel Ids"],
                 "description": "get all parcelIds in an array",
                 "parameters": [{
                     "parcelId": "integer",
                     "in": "body",
                     "type": "integer",
-                    "description": "parcelIds",
+                    "description": "Edited Parcel Ids",
                     "schema": {
-                        "$ref": "#/definitions/User/parcels/parcelId"
+                        "$ref": "#/definitions/Parcel-Id"
                     }
                 }],
                 "produces": ["application/json"],
@@ -168,7 +168,7 @@
                     "200": {
                         "description": "Updated!!",
                         "schema": {
-                            "$ref": "#/definitions/User/parcels"
+                            "$ref": "#/definitions/Parcel-Id"
                         }
                     }
                 }
@@ -176,15 +176,15 @@
         },
         "/parcels/parcelId/cancel": {
             "delete": {
-                "tags": ["parcelIds"],
+                "tags": ["Users Parcel Ids"],
                 "description": "get all parcelIds in an array",
                 "parameters": [{
                     "parcelId": "integer",
                     "in": "body",
                     "type": "integer",
-                    "description": "parcelIds",
+                    "description": "Deleted Parcel-Ids",
                     "schema": {
-                        "$ref": "#/definitions/User/parcels/parcelId"
+                        "$ref": "#/definitions/Parcel-Id"
                     }
                 }],
                 "produces": ["application/json"],
@@ -192,7 +192,7 @@
                     "200": {
                         "description": "Deleted",
                         "schema": {
-                            "$ref": "#/definitions/User/parcels"
+                            "$ref": "#/definitions/Parcel-Id"
                         }
                     }
                 }
@@ -215,6 +215,26 @@
                 "name": {
                     "type": "string"
                 },
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "Parcels": {
+            "required": ["name", "parcelId", "amount"],
+            "properties": {
+                "publicDelivery": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "Id": {
+                    "type": "integer"
+                },
                 "parcel": {
                     "type": "array",
                     "items": {
@@ -234,20 +254,18 @@
                 }
             }
         },
-        "Parcels": {
-            "required": ["name", "parcelId", "amount"],
+        "Parcel-Id": {
+            "required": ["name", "_id"],
             "properties": {
-                "publicDelivery": {
+                "_id": {
+                    "type": "integer",
+                    "uniqueItems": true
+                },
+                "isPublic": {
                     "type": "boolean"
                 },
-                "name": {
-                    "type": "string"
-                },
                 "parcelId": {
-                    "type": "array"
-                },
-                "amount": {
-                    "type": "number"
+                    "type": "integer"
                 }
             }
         }

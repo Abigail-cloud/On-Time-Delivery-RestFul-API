@@ -1,4 +1,4 @@
-export const getUserList = () => {
+const getUserList = () => {
     return [{
             id: 1,
             publicDelivery: true,
@@ -53,3 +53,4 @@ export const getUserList = () => {
         },
     ];
 }
+module.exports = { getUserList }

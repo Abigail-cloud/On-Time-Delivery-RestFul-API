@@ -7,10 +7,10 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const secret = 'secret';
 const PORT = process.env.PORT || 8001;
-import { getUserList } from './user';
-const userList = getUserList();
-import { getUsersData } from './data'
-const usersData = getUsersData();
+const userList = require('./user');
+userList.getUserList()
+const usersData = require('./data');
+usersData.getUsersData()
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
@@ -61,13 +61,16 @@ app.post('/login', async(req, res) => {
         res.status(403).send('Password mismatch')
     }
 });
+//(({ parcel }) => parcel)
 //Get Parcels from users.js
 app.get('/parcels', (req, res) => {
     return res.status(200).send({
         success: 'true',
         message: 'parcel checked',
-        parcels: userList.map(({ parcel }) => parcel),
-    });
+        parcels: userList.map((parcel) => {
+            parcel
+        })
+    })
 });
 
 
