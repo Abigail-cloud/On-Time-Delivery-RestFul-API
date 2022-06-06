@@ -7,10 +7,10 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const secret = 'secret';
 const PORT = process.env.PORT || 8001;
-const userList = require('./user');
-userList.getUserList()
-const usersData = require('./data');
-usersData.getUsersData()
+const List = require('./user.js');
+const userList = List.getUserList()
+const Data = require('./data.js');
+const usersData = Data.getUsersData()
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
@@ -18,9 +18,9 @@ app.use(bodyParser.json())
 //Get all users for base path
 app.get("/users", (req, res) => {
     return res.status(200).send({
-        success: "true",
-        message: "users",
-        users: userList,
+        success: 'true',
+        message: 'users',
+        users: userList
     });
 });
 
@@ -47,13 +47,13 @@ app.post('/login', async(req, res) => {
     if (!(email && password)) {
         req.status(400).send('Email and Passsword Required')
     }
-    const usersIndex = usersData.findIndex(user => user.email === email)
-        //if user does not exist that is not part of the index
+    const usersIndex = usersData.findIndex((user) => user.email === email);
+    //if user does not exist that is not part of the index
     console.log('userindex', usersIndex)
     if (usersIndex === -1) {
         res.status(400).send('User not found')
     }
-    const user = usersData[usersIndex]
+    const user = usersData[usersIndex];
     if (await bcrypt.compare(password, user.password)) {
         const token = jwt.sign({ user_id: user.id, email: user.email }, secret, { expiresIn: '14d' })
         res.status(200).json(token);
@@ -61,15 +61,16 @@ app.post('/login', async(req, res) => {
         res.status(403).send('Password mismatch')
     }
 });
+
 //(({ parcel }) => parcel)
 //Get Parcels from users.js
 app.get('/parcels', (req, res) => {
+
+    let par = userList.map(({ parcel }) => parcel);
     return res.status(200).send({
         success: 'true',
         message: 'parcel checked',
-        parcels: userList.map((parcel) => {
-            parcel
-        })
+        parcels: par
     })
 });
 
