@@ -31,7 +31,7 @@ const swaggerOptions = {
     swaggerDefinition: {
         info: {
             version: "1.0.0",
-            title: "On Time Delivery_Reastful API",
+            title: "On Time Delivery_Restful API",
             description: "User Parcel API Information",
             contact: {
                 name: "Abigail Developer"
