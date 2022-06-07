@@ -5,10 +5,20 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const secret = 'secret';
 const port = process.env.PORT || 8001;
-const List = require('./user.js');
+const List = require('./usersdata/user');
 const userList = List.getUserList()
-const Data = require('./data.js');
+const Data = require('./usersdata/data');
 const usersData = Data.getUsersData()
+    // use the express-static middleware
+app.use(express.static("public"))
+const path = require('path');
+//The main Page
+app.get('/', function(req, res) {
+    res.sendFile(path.join(__dirname + '/public/index.html'));
+    //__dirname : Will resolve to your project folder.
+});
+
+
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
