@@ -1,14 +1,10 @@
 const express = require('express');
 const app = express()
 const bodyParser = require('body-parser');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
-const secret = 'secret';
 const port = process.env.PORT || 8001;
-const List = require('./usersdata/user');
-const userList = List.getUserList()
-const Data = require('./usersdata/data');
-const usersData = Data.getUsersData()
+
+const parcelsRoute = require('./routes/routes')
+app.use('/', parcelsRoute)
     // use the express-static middleware
 app.use(express.static("public"))
 const path = require('path');
@@ -26,6 +22,7 @@ app.use(bodyParser.json())
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
 
+
 // Extended: https://swagger.io/specification/#infoObject
 const swaggerOptions = {
     swaggerDefinition: {
@@ -36,7 +33,7 @@ const swaggerOptions = {
             contact: {
                 name: "Abigail Developer"
             },
-            servers: ["http://localhost:8001"]
+            servers: ["http://localhost:8001"],
         }
     },
     // ['.routes/*.js']
@@ -45,7 +42,8 @@ const swaggerOptions = {
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs))
 
-//Routes
+
+//Get all users get their parcels
 /**
  * @swagger
  * /users:
@@ -55,14 +53,6 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs))
  *      '200':
  *        description: A successful response
  */
-//base path users
-app.get("/users", (req, res) => {
-    res.status(200).send({
-        success: 'true',
-        message: 'users',
-        users: userList
-    });
-});
 
 /**
  * @swagger
@@ -89,6 +79,8 @@ app.get("/users", (req, res) => {
  *         type: string
  */
 
+
+//User Signup
 /**
  * @swagger
  * tags:
@@ -114,11 +106,16 @@ app.get("/users", (req, res) => {
  *     produces:
  *       - application/json
  *     parameters:
- *       - $ref: '#/parameters/Id/email/lastname/firstame'
+ *       - $ref: '#/parameters'
+ *       - name: email
+ *         description: User's email.
+ *         in: formData
+ *         required: true
+ *         type: string
  *       - name: password
  *         description: User's password.
  *         in: formData
- *         required: true
+ *         required: false
  *         type: string
  *     responses:
  *       200:
@@ -127,21 +124,6 @@ app.get("/users", (req, res) => {
  *           type: object
  *           $ref: '#/definitions/Signup'
  */
-//User Signup
-app.post('/signup', async(req, res) => {
-    console.log('post body', req.body);
-    const { email, password, firstName, lastName, id } = req.body;
-    const encryptedPassword = await bcrypt.hash(password, 10)
-    const data = {
-        id: id,
-        email: email,
-        password: encryptedPassword,
-        firstName: firstName,
-        lastName: lastName
-    }
-    usersData.push(data);
-    res.status(201).json(usersData);
-});
 
 
 /**
@@ -160,6 +142,8 @@ app.post('/signup', async(req, res) => {
  *         type: string
  */
 
+
+//User Login
 /**
  * @swagger
  * tags:
@@ -198,26 +182,7 @@ app.post('/signup', async(req, res) => {
  *           type: object
  *           $ref: '#/definitions/Login'
  */
-//User Login
-app.post('/login', async(req, res) => {
-    const { email, password } = req.body;
-    if (!(email && password)) {
-        res.status(400).send('Email and Passsword Required')
-    }
-    const usersIndex = usersData.findIndex((user) => user.email === email);
-    //if user does not exist that is not part of the index
-    console.log('userindex', usersIndex)
-    if (usersIndex === -1) {
-        res.status(400).send('User not found')
-    }
-    const user = usersData[usersIndex];
-    if (await bcrypt.compare(password, user.password)) {
-        const token = jwt.sign({ user_id: user.id, email: user.email }, secret, { expiresIn: '14d' })
-        res.status(200).json(token);
-    } else {
-        res.status(403).send('Password mismatch')
-    }
-});
+
 
 /**
  * @swagger
@@ -228,17 +193,9 @@ app.post('/login', async(req, res) => {
  *      '200':
  *        description: A successful response
  */
-//Get Parcels from users.js
-app.get('/parcels', (req, res) => {
 
-    let par = userList.map(({ parcel }) => parcel);
-    res.status(200).send({
-        success: 'true',
-        message: 'parcel checked',
-        parcels: par
-    })
-});
 
+//Get parcelID
 /**
  * @swagger
  * /parcels/parcelId:
@@ -248,23 +205,8 @@ app.get('/parcels', (req, res) => {
  *      '200':
  *        description: A successful response
  */
-//Get parcelIds from parcel from user.js
-app.get('/parcels/parcelId', (req, res) => {
-    let parcelIds = [];
-    for (let i = 0; i < userList.length; i++) {
-        let currentUser = userList[i];
-        for (let j = 0; j < currentUser.parcel.length; j++) {
-            let currentParcel = currentUser.parcel[j];
-            parcelIds.push(currentParcel['parcelId']);
-        }
-    }
-    return res.status(200).send({
-        success: 'true',
-        message: 'parcelId Checked',
-        parcel_ID: parcelIds
-    });
-});
 
+//Get parcels by user ID
 /**
  * @swagger
  * /users/userId/parcels:
@@ -274,14 +216,7 @@ app.get('/parcels/parcelId', (req, res) => {
  *      '200':
  *        description: A successful response
  */
-//User ParcelId
-app.get('/users/userId/parcels', (req, res) => {
-    return res.status(200).send({
-        success: 'true',
-        message: 'parcel loading',
-        user_parcels: userList[1].parcel
-    })
-});
+
 
 /**
  * @swagger
@@ -340,42 +275,26 @@ app.get('/users/userId/parcels', (req, res) => {
  *           type: object
  *           $ref: '#/definitions/Parcel'
  */
-//post parcels
-app.post('/parcels', (req, res) => {
-        const { name, amount, parcelId } = req.body
 
-        const parcelData = {
-            name: name,
-            amount: amount,
-            parcelId: parcelId
-        }
-        userList[0].parcel.push(parcelData);
-        res.status(200).json(userList);
-    })
-    /**
-     * @swagger
-     * /parcels/parcelId/edit:
-     *    put:
-     *      description: Use to update parcel
-     *    parameters:
-     *      - name: parcelId
-     *        in: query
-     *        description: Edit the parcel with their Ids
-     *        required: false
-     *        schema:
-     *          type: integer
-     *          format: integer
-     *    responses:
-     *      '201':
-     *        description: Successfully created user
-     */
-    //Update parcels
-app.put('/parcels/parcelId/edit', (req, res) => {
-    console.log('put body', req.body);
-    let parcelIndex = userList[0].parcel.findIndex((parcelAdded) => parcelAdded.id === req.body.parcelId);
-    userList[0].parcel.splice(parcelIndex, 1, req.body);
-    res.status(201).json(userList[0].parcel);
-});
+/**
+ * @swagger
+ * /parcels/parcelId/edit:
+ *    put:
+ *      description: Use to update parcel
+ *    parameters:
+ *      - name: parcelId
+ *        in: query
+ *        description: Edit the parcel with their Ids
+ *        required: false
+ *        schema:
+ *          type: integer
+ *          format: integer
+ *    responses:
+ *      '201':
+ *        description: Successfully created user
+ */
+
+//Delete parcels by parcelId
 /**
  * @swagger
  * /parcels/parcelId/cancel:
@@ -393,11 +312,7 @@ app.put('/parcels/parcelId/edit', (req, res) => {
  *      '201':
  *        description: Deleted successfully 
  */
-app.delete('/parcels/parcelId/cancel', (req, res) => {
-    let userIndex = userList[0].parcel.findIndex((deleteParcel) => deleteParcel.id === req.body.id);
-    userList[0].parcel.splice(userIndex, 1);
-    res.status(201).json(userList[0].parcel);
-});
+
 
 
 
